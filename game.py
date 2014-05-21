@@ -27,7 +27,7 @@ while True:
 		 		tank.direction = 'right'
 		 	# shoot
 		 	if event.key == pygame.K_SPACE:
-		 		tank.shoot()
+		 	    if len(bullets) < 2: tank.shoot()
 		elif event.type == pygame.KEYUP:
 			tank.direction = 'stopped'
 
@@ -40,6 +40,10 @@ while True:
 		screen.blit(bullet.obj, bullet.rect)
 		if bullet.rect.colliderect(enemy):
 			bullets.remove(bullet)
+			if enemy.life > 1:
+				enemy.life -= 1
+			else:
+				print 'perdeu, otario!'
 			print 'lol'
 
 	# render players

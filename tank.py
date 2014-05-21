@@ -8,6 +8,7 @@ class Tank:
 		if rotate: self.obj = pygame.transform.rotate(self.obj, 180)
 		self.rect = self.obj.get_rect(center=(left, top))
 		self.direction = 'stopped'
+		self.life = 4
 
 	def move(self):
 		if self.direction == 'left':
