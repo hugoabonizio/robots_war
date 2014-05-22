@@ -2,6 +2,7 @@ import sys, pygame
 from bullet import Bullet
 from tank import Tank
 from config import size, width, height, bullets
+import client
 
 pygame.init()
 
@@ -10,6 +11,20 @@ screen = pygame.display.set_mode(size)
 
 tank = Tank(width/2, height - 20)
 enemy = Tank(width/2, 20, rotate = False)
+
+# estabilish connect, have to receive
+# 'conn' to be in the game
+client = client.Client('localhost', 8080)
+print 'Conectando ao servidor...'
+if client.connected():
+	print 'OK!'
+else:
+	print 'Nao ha espaco livre no servidor'
+	sys.exit()
+
+print 'Sincronizando...'
+if client.synced():
+	client.listen(tank, enemy)
 
 while True:
 

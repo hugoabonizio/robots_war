@@ -1,19 +1,72 @@
 import sys
 import socket
+import thread
+import pygame.time
 
-try:
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    host = socket.gethostname()
-    client.connect(('localhost', int(sys.argv[1])))
-    if client.recv(1024) == 'close':
-    	print 'haaa'
-    	raise Exception
-    send = 'aa'
-    while send != 'sai':
-    	send = raw_input()
-    	client.send(send)
-    	print client.recv(1024)
-    client.shutdown(socket.SHUT_RDWR)
-    client.close()
-except Exception as msg:
-    print msg
+class Client:
+    def __init__(self, host, port):
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client.connect((host, port))
+
+    def connected(self):
+        response = self.client.recv(4)
+        if response == 'conn':
+            return True
+        elif response == 'clos':
+            return False
+
+    def synced(self):
+        print 'testando synced'
+        response = self.client.recv(4)
+        print 'response: ', response
+        if response == 'wait':
+            while response != 'sync':
+                response = self.client.recv(4)
+        return True
+
+
+    def send(self):
+        try:
+            if client.recv(1024) == 'close':
+            	print 'haaa'
+            	raise Exception
+            send = 'aa'
+            while send != 'sai':
+            	send = raw_input()
+            	client.send(send)
+            	print client.recv(1024)
+            client.shutdown(socket.SHUT_RDWR)
+            client.close()
+        except Exception as msg:
+            print msg
+
+    def listen(self, tank, enemy):
+        self.tank = tank
+        self.enemy = enemy
+        thread.start_new_thread(receiver, (self.client, self.tank, self.enemy))
+        thread.start_new_thread(sender, (self.client, self.tank, self.enemy))
+
+    def send_bullet(self, left):
+        self.client.send('game/bullet:' + left)
+
+
+def receiver(connection, tank, enemy):
+    try:
+        while True:
+            data = connection.recv(1024)
+            if not data:
+                break
+            print data
+            enemy.rect.left = int(data)
+    except Exception as msg:
+        print msg
+    connection.close()
+
+def sender(connection, tank, enemy):
+    try:
+        while True:
+            connection.send(str(tank.rect.left))
+            pygame.time.wait(30)
+    except Exception as msg:
+        print msg
+    connection.close()
