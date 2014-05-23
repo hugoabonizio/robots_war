@@ -33,7 +33,7 @@ def handler(clientsock, slot):
     slots += 1
 
 if __name__ == '__main__':
-    HOST = 'localhost'
+    HOST = '0.0.0.0'
     PORT = int(sys.argv[1])
     BUFSIZ = 1024
     ADDR = (HOST, PORT)
