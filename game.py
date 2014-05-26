@@ -14,7 +14,7 @@ enemy = Tank(width/2, 20, rotate = False)
 
 # estabilish connect, have to receive
 # 'conn' to be in the game
-client = client.Client('localhost', 8080)
+client = client.Client(sys.argv[1], int(sys.argv[2]))
 print 'Conectando ao servidor...'
 if client.connected():
 	print 'OK!'
