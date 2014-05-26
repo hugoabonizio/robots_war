@@ -63,14 +63,14 @@ def receiver(connection, tank, enemy):
                 if key == 'position':
                     enemy.rect.left = int(value)
     except Exception as msg:
-        print msg
+        print msg, header, body
     connection.close()
 
 def sender(connection, tank, enemy):
     try:
         while True:
             connection.send('game:position=' + str(tank.rect.left))
-            pygame.time.wait(30)
+            pygame.time.wait(40)
     except Exception as msg:
         print msg
     connection.close()
