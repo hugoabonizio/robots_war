@@ -71,7 +71,7 @@ def sender(connection, tank, enemy):
     try:
         while True:
             connection.send('game:position=' + str(tank.rect.left) + ';')
-            pygame.time.wait(40)
+            pygame.time.wait(20)
     except Exception as msg:
         print msg
     connection.close()
