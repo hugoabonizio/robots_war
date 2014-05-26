@@ -2,7 +2,8 @@ from socket import *
 import threading
 import thread
 import sys
-import pygame
+#import pygame
+import time
 
 slots = 2
 connections = [0, 0]
@@ -18,7 +19,7 @@ def handler(clientsock, slot):
         # slot, wait the connection
         while connections[int(not slot)] == 0:
             clientsock.send('wait')
-            pygame.time.wait(100)
+            time.sleep(0.100)
         clientsock.send('sync')
         
         while True:
