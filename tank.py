@@ -1,6 +1,6 @@
 import pygame
 from bullet import Bullet
-from config import bullets
+from config import bullets, enemy_bullets
 
 class Tank:
 	def __init__(self, left, top, rotate = True):
@@ -19,6 +19,10 @@ class Tank:
 			speed = [0, 0]
 		self.rect = self.rect.move(speed)
 
-	def shoot(self):
-		bullet = Bullet(self.rect.left + 20, self.rect.top)
-		bullets.append(bullet)
+	def shoot(self, enemy=False):
+		if enemy:
+			bullet = Bullet(self.rect.left + 20, self.rect.top + 20)
+			enemy_bullets.append(bullet)
+		else:
+			bullet = Bullet(self.rect.left + 20, self.rect.top)
+			bullets.append(bullet)

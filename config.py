@@ -1,3 +1,3 @@
-size = width, height = 600, 400
+size = width, height = 700, 500
 
-bullets = []
+bullets, enemy_bullets = [], []

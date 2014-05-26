@@ -47,7 +47,7 @@ class Client:
         thread.start_new_thread(sender, (self.client, self.tank, self.enemy))
 
     def send_bullet(self, left):
-        self.client.send('game:bullet=' + left + ';')
+        self.client.send('game:bullet=' + str(left) + ';')
 
 
 def receiver(connection, tank, enemy):
@@ -56,15 +56,21 @@ def receiver(connection, tank, enemy):
             data = connection.recv(1024)
             if not data:
                 break
-            print data
-            data = data.split(';')[0]
-            header, body = data.split(':')
-            if header == 'game':
-                key, value = body.split('=')
-                if key == 'position':
-                    enemy.rect.left = int(value)
+            #print data
+            data = data.split(';')
+            if data[-1] == '': data = data[:-1]
+            
+            for d in data:
+                header, body = d.split(':')
+                # Game message
+                if header == 'game':
+                    key, value = body.split('=')
+                    if key == 'position':
+                        enemy.rect.left = int(value)
+                    if key == 'bullet':
+                        enemy.shoot(enemy=True)
     except Exception as msg:
-        print msg, header, body
+        print "exce: ", msg, header, body
     connection.close()
 
 def sender(connection, tank, enemy):
@@ -73,5 +79,5 @@ def sender(connection, tank, enemy):
             connection.send('game:position=' + str(tank.rect.left) + ';')
             pygame.time.wait(20)
     except Exception as msg:
-        print msg
+        print "Excecao: ", msg
     connection.close()
