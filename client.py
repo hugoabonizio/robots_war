@@ -57,7 +57,7 @@ def receiver(connection, tank, enemy):
             if not data:
                 break
             print data
-            data = data.split(';')[0]
+            data = data.split(';')[0][:-1]
             header, body = data.split(':')
             if header == 'game':
                 key, value = body.split('=')
