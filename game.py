@@ -2,7 +2,7 @@ import sys, pygame
 from bullet import Bullet
 from tank import Tank
 from chat import Chat
-from config import size, width, height, bullets, enemy_bullets
+from config import *
 import client
 
 
@@ -20,13 +20,6 @@ else:
 	print 'Nao ha espaco livre no servidor'
 	sys.exit()
 
-print 'Sincronizando...'
-if client.synced():
-	client.listen(tank, enemy)
-
-# init and show screen
-pygame.init()
-screen = pygame.display.set_mode(size)
 
 # initialize chat
 chat = Chat(client)
@@ -34,6 +27,16 @@ chat.add_message('you', 'hahaha1')
 chat.add_message('you', 'hahaha2')
 chat.add_message('you', 'hahaha3')
 chat.add_message('you', 'hahaha4')
+
+
+print 'Sincronizando...'
+if client.synced():
+	client.listen(tank, enemy, chat)
+
+# init and show screen
+pygame.init()
+screen = pygame.display.set_mode(size)
+
 
 while True:
 
@@ -45,12 +48,14 @@ while True:
 			sys.exit()
 
 		elif event.type == pygame.KEYDOWN:
-			if (event.key > 96 and event.key < 123) or event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+			# chat functions
+			if (event.key > 96 and event.key < 123) or event.key == pygame.K_SPACE or event.key == pygame.K_RETURN or event.key == 8:
 				if event.key == pygame.K_RETURN:
 					chat.send()
+				elif event.key == 8:
+					chat.backspace()
 				else:
 					chat.write(event.key)
-				# escreve
 			else:
 				# moving
 			 	if event.key == pygame.K_LEFT:
@@ -97,12 +102,14 @@ while True:
 	# render conversation
 	font = pygame.font.Font(None, 20)
 	last_message_y = 0
-	for message in chat.conversation:
+	for message in reversed(chat.conversation):
 		font_render = font.render(message, 1, (255, 255, 255))
-		screen.blit(font_render, (20, 100 + last_message_y))
-		last_message_y -= 12
+		screen.blit(font_render, (20, 300 + last_message_y))
+		last_message_y -= 15
 
 	# render buffer
+	font_render = font.render("> " + chat.buffer, 1, (255, 255, 255))
+	screen.blit(font_render, (20, 315))
 
 
 	

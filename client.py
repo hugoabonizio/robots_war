@@ -2,6 +2,7 @@ import sys
 import socket
 import thread
 import pygame.time
+from config import *
 
 class Client:
     def __init__(self, host, port):
@@ -25,32 +26,23 @@ class Client:
         return True
 
 
-    def send(self):
+    def send(self, message):
         try:
-            if client.recv(1024) == 'close':
-            	print 'haaa'
-            	raise Exception
-            send = 'aa'
-            while send != 'sai':
-            	send = raw_input()
-            	client.send(send)
-            	print client.recv(1024)
-            client.shutdown(socket.SHUT_RDWR)
-            client.close()
+            self.client.send(message)
         except Exception as msg:
             print msg
 
-    def listen(self, tank, enemy):
+    def listen(self, tank, enemy, chat):
         self.tank = tank
         self.enemy = enemy
-        thread.start_new_thread(receiver, (self.client, self.tank, self.enemy))
+        thread.start_new_thread(receiver, (self.client, self.tank, self.enemy, chat))
         thread.start_new_thread(sender, (self.client, self.tank, self.enemy))
 
     def send_bullet(self, left):
         self.client.send('game:bullet=' + str(left) + ';')
 
 
-def receiver(connection, tank, enemy):
+def receiver(connection, tank, enemy, chat):
     try:
         while True:
             data = connection.recv(1024)
@@ -62,13 +54,16 @@ def receiver(connection, tank, enemy):
             
             for d in data:
                 header, body = d.split(':')
-                # Game message
+                # GAME message
                 if header == 'game':
                     key, value = body.split('=')
                     if key == 'position':
                         enemy.rect.left = int(value)
                     if key == 'bullet':
                         enemy.shoot(enemy=True)
+                elif header == 'chat':
+                    key, value = body.split('=')
+                    chat.add_message(key, value)
     except Exception as msg:
         print "exce: ", msg, header, body
     connection.close()
