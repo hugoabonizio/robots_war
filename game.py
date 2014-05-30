@@ -38,6 +38,10 @@ pygame.init()
 screen = pygame.display.set_mode(size)
 
 
+# load object
+heart = pygame.transform.scale(pygame.image.load("images/heart-icon.png"), (20, 20))
+
+
 while True:
 
 	# background
@@ -111,6 +115,16 @@ while True:
 	font_render = font.render("> " + chat.buffer, 1, (255, 255, 255))
 	screen.blit(font_render, (20, 315))
 
+
+	# render lifes
+
+	# enemy's
+	for i in range(enemy.life):
+		screen.blit(heart, (width - 40 - (i * 25), 80))
+
+	# tank's
+	for i in range(tank.life):
+		screen.blit(heart, (20 + (i * 25), 400))
 
 	
 	pygame.display.flip()
