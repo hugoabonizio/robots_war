@@ -9,9 +9,9 @@ class Bullet:
 
 	def move(self, enemy=False):
 		if enemy:
-			speed = 2
+			speed = 4
 		else:
-			speed = -2
+			speed = -4
 		self.rect = self.rect.move([0, speed])
 		if self.rect.top < 0 or self.rect.top > height:
 			if enemy:
