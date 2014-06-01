@@ -8,9 +8,9 @@ class Tank:
 		if rotate: self.obj = pygame.transform.rotate(self.obj, 180)
 		self.rect = self.obj.get_rect(center=(left, top))
 		self.direction = 'stopped'
-		self.life = 4
-		self.lost = False
-		self.ok = True
+		self.life = 2
+		self.win = None # situation on the game
+		self.ok = True # set to False if some connection problem appear
 
 	def move(self):
 		if self.direction == 'left':

@@ -45,46 +45,59 @@ class Client:
 def receiver(connection, tank, enemy, chat):
     try:
         while True:
-            data = connection.recv(1024)
-            if not data:
-                break
-            #print data
-            data = data.split(';')
-            if data[-1] == '': data = data[:-1]
-            
-            for d in data:
-                header, body = d.split(':')
-                # GAME message
-                if header == 'game':
-                    key, value = body.split('=')
-                    if key == 'position':
-                        enemy.rect.left = int(value)
-                    if key == 'bullet':
-                        enemy.shoot(enemy=True)
-                    if key == 'life':
-                        enemy.life = int(value)
-                    if key == 'end':
-                        print 'ACABOU!!'
-                        sys.exit()
-                elif header == 'chat':
-                    key, value = body.split('=')
-                    chat.add_message(key, value)
+            if tank.win == None and tank.ok:
+                data = connection.recv(1024)
+                if not data:
+                    break
+                #print data
+                data = data.split(';')
+                if data[-1] == '': data = data[:-1]
+                
+                for d in data:
+                    header, body = d.split(':')
+                    # GAME message
+                    if header == 'game':
+                        key, value = body.split('=')
+                        if key == 'position':
+                            enemy.rect.left = int(value)
+                        if key == 'bullet':
+                            enemy.shoot(enemy=True)
+                        if key == 'life':
+                            enemy.life = int(value)
+                        if key == 'end':
+                            if value == 'connection':
+                                tank.ok = False
+                                print 'problema na conexao'
+                            elif value == 'you_win':
+                                tank.win = True
+                                print 'voce ganhou!!'
+                            sys.exit()
+                    elif header == 'chat':
+                        key, value = body.split('=')
+                        chat.add_message(key, value)
+            else:
+                sys.exit()
     except Exception as msg:
-        print "exce: ", msg, header, body
+        tank.ok = False
+        print "Except (receiver): ", msg, header, body
     connection.close()
 
 def sender(connection, tank, enemy):
     try:
         count = 0
         while True:
-            connection.send('game:position=' + str(tank.rect.left) + ';')
-            if count % 5 == 0:
-                connection.send('game:life=' + str(tank.life) + ';')
-                if tank.life == 0:
-                    tank.lost = True
-                    connection.send('game:end=you_win;')
-            count += 1
-            pygame.time.wait(20)
+            if tank.win == None and tank.ok:
+                connection.send('game:position=' + str(tank.rect.left) + ';')
+                if count % 5 == 0:
+                    connection.send('game:life=' + str(tank.life) + ';')
+                    if tank.life == 0:
+                        tank.win = False
+                        connection.send('game:end=you_win;')
+                count += 1
+                pygame.time.wait(20)
+            else:
+                sys.exit()
     except Exception as msg:
-        print "Excecao: ", msg
+        tank.ok = False
+        print "Except (sender): ", msg
     connection.close()
