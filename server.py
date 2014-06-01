@@ -27,7 +27,6 @@ def handler(clientsock, slot):
             if not data:
                 break
             connections[int(not slot)].send(data)
-        print 'acabou uma iteracao'
     except Exception as msg:
         clientsock.send('game:end=connection')
         print msg

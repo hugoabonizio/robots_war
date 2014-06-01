@@ -149,7 +149,10 @@ while True:
 
 
 	# if connection error
-	else: pass
+	else:
+		screen.fill([0, 0, 0])
+		font_render = font.render("Problema na conexao...", 1, (255, 255, 255))
+		screen.blit(font_render, (90, height/2))
 
 	
 	pygame.display.flip()
