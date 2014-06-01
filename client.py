@@ -61,6 +61,11 @@ def receiver(connection, tank, enemy, chat):
                         enemy.rect.left = int(value)
                     if key == 'bullet':
                         enemy.shoot(enemy=True)
+                    if key == 'life':
+                        enemy.life = int(value)
+                    if key == 'end':
+                        print 'ACABOU!!'
+                        sys.exit()
                 elif header == 'chat':
                     key, value = body.split('=')
                     chat.add_message(key, value)
@@ -70,8 +75,15 @@ def receiver(connection, tank, enemy, chat):
 
 def sender(connection, tank, enemy):
     try:
+        count = 0
         while True:
             connection.send('game:position=' + str(tank.rect.left) + ';')
+            if count % 5 == 0:
+                connection.send('game:life=' + str(tank.life) + ';')
+                if tank.life == 0:
+                    tank.lost = True
+                    connection.send('game:end=you_win;')
+            count += 1
             pygame.time.wait(20)
     except Exception as msg:
         print "Excecao: ", msg

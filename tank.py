@@ -9,6 +9,8 @@ class Tank:
 		self.rect = self.obj.get_rect(center=(left, top))
 		self.direction = 'stopped'
 		self.life = 4
+		self.lost = False
+		self.ok = True
 
 	def move(self):
 		if self.direction == 'left':

@@ -82,18 +82,18 @@ while True:
 	for bullet in bullets:
 		bullet.move()
 		screen.blit(bullet.obj, bullet.rect)
-		if bullet.rect.colliderect(enemy):
-			bullets.remove(bullet)
-			if enemy.life > 1:
-				enemy.life -= 1
-			else:
-				print 'perdeu, otario!'
-			print 'lol'
 
 	# enemy bullets
 	for bullet in enemy_bullets:
 		bullet.move(enemy=True)
 		screen.blit(bullet.obj, bullet.rect)
+		# check collision
+		if bullet.rect.colliderect(tank):
+			enemy_bullets.remove(bullet)
+			if tank.life > 0:
+				tank.life -= 1
+			else:
+				client.send('game:dead=true;')
 
 	# render players
 	screen.blit(tank.obj, tank.rect)
@@ -108,12 +108,12 @@ while True:
 	last_message_y = 0
 	for message in reversed(chat.conversation):
 		font_render = font.render(message, 1, (255, 255, 255))
-		screen.blit(font_render, (20, 300 + last_message_y))
+		screen.blit(font_render, (20, 200 + last_message_y))
 		last_message_y -= 15
 
 	# render buffer
 	font_render = font.render("> " + chat.buffer, 1, (255, 255, 255))
-	screen.blit(font_render, (20, 315))
+	screen.blit(font_render, (20, 215))
 
 
 	# render lifes
@@ -124,7 +124,7 @@ while True:
 
 	# tank's
 	for i in range(tank.life):
-		screen.blit(heart, (20 + (i * 25), 400))
+		screen.blit(heart, (20 + (i * 25), 300))
 
 	
 	pygame.display.flip()
