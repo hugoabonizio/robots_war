@@ -23,11 +23,6 @@ else:
 
 # initialize chat
 chat = Chat(client)
-chat.add_message('you', 'hahaha1')
-chat.add_message('you', 'hahaha2')
-chat.add_message('you', 'hahaha3')
-chat.add_message('you', 'hahaha4')
-
 
 print 'Sincronizando...'
 if client.synced():

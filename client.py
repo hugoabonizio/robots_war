@@ -17,9 +17,8 @@ class Client:
             return False
 
     def synced(self):
-        print 'testando synced'
         response = self.client.recv(4)
-        print 'response: ', response
+        # print 'response: ', response
         if response == 'wait':
             while response != 'sync':
                 response = self.client.recv(4)
@@ -67,10 +66,10 @@ def receiver(connection, tank, enemy, chat):
                         if key == 'end':
                             if value == 'connection':
                                 tank.ok = False
-                                print 'problema na conexao'
+                                # print 'problema na conexao'
                             elif value == 'you_win':
                                 tank.win = True
-                                print 'voce ganhou!!'
+                                # print 'voce ganhou!!'
                             sys.exit()
                     elif header == 'chat':
                         key, value = body.split('=')
