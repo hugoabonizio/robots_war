@@ -28,7 +28,7 @@ def handler(clientsock, slot):
                 break
             connections[int(not slot)].send(data)
     except Exception as msg:
-        clientsock.send('game:end=connection')
+        clientsock.send('game:end=connection;')
         print msg
     clientsock.close()
     slots += 1
